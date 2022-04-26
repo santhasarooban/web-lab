@@ -8,10 +8,10 @@ from werkzeug import secure_filename
 from flask import send_from_directory 
 
 def show_files(username):
-    return (os.listdir(path='C:\\Users\\Дмитро\\Desktop\\project\\files\\'+username))
+    return (os.listdir(path='C:\\Users\\Santha\\'+username))
        
 app = Flask(__name__)
-UPLOAD_FOLDER ='C:\\Users\\Дмитро\\Desktop\\project\\files\\'
+UPLOAD_FOLDER ='C:\\Users\\Santha\\'
 
 def get_user():
     lst=[]
@@ -21,7 +21,7 @@ def get_user():
         lst.append(row[0])
     conn.commit()
     return lst
-l=get_user()
+l = get_user()
 
 @app.route('/')
 def home():
@@ -103,7 +103,6 @@ def back():
 
     
 @app.route("/delete",methods=['GET','POST'])
-
 def delete():
     if request.method=='GET':
         lst=show_files(session.get('username'))
@@ -114,26 +113,6 @@ def delete():
         print(choose)
         os.remove(path='C:\\Users\\Дмитро\\Desktop\\project\\files\\'+session.get('username', None)+'\\'+(choose))
         return redirect("http://127.0.0.1:4000/home",code=302)
-        
-@app.route("/remove",methods=['POST'])
-def remove():
-    os.remove(path='C:\\Users\\Дмитро\\Desktop\\project\\files\\'+session.get('username', None)+'\\'+(choose))
-    return redirect("http://127.0.0.1:4000/home",code=302)
-    
-@app.route("/change",methods=['GET','POST'])
-def change():
-    if request.method == 'GET':
-        return render_template("change.html")
-    elif request.method == 'POST':
-        conn=sqlite3.connect("base.db")
-        c=conn.cursor()
-        if request.form['new password']==request.form['repeat password']:
-            c.execute("UPDATE data SET folder_password = ? WHERE username = ?", [request.form['new password'], session.get('username', None)])
-            error1="Password refreshed successfully!"
-        else:
-            error1="Passwords aren`t same!"
-        conn.commit()
-    return render_template("change.html",error1=error1)
     
 @app.route("/upload",methods=['GET','POST'])
 def upload_file():
